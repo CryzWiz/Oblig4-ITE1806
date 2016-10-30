@@ -7,7 +7,7 @@ class GenSig {
 	
     public static void main(String[] args) {
     	final char[] password= args[1].toCharArray();
-        /* Generate a DSA signature */
+        /* Generate a RSA signature */
         if (args.length != 2) {
             System.out.println("Usage: GenSig nameOfFileToSign password");
             }
