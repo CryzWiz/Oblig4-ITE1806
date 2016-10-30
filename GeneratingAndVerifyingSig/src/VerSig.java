@@ -78,8 +78,7 @@ class VerSig {
 		FileInputStream ksfis = new FileInputStream(alias);
 		BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
 		ks.load(ksbufin, password);
-		String x = ks.getCertificate(alias).getPublicKey().toString();
-		return x;
+		return ks.getCertificate(alias).getPublicKey().toString();
 	}
  
 }
