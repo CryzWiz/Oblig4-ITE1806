@@ -1,14 +1,15 @@
 import java.io.*;
 import java.security.*;
+import java.security.cert.CertificateException;
  
 class GenSig {
- 
+	public static String keystorage = "keystore";
     public static void main(String[] args) {
- 
+    	final char[] password= args[1].toCharArray();
         /* Generate a DSA signature */
  
-        if (args.length != 1) {
-            System.out.println("Usage: GenSig nameOfFileToSign");
+        if (args.length != 2) {
+            System.out.println("Usage: GenSig nameOfFileToSign password");
             }
         else try{
  
@@ -20,9 +21,8 @@ class GenSig {
  
             keyGen.initialize(1024, random);
  
-            KeyPair pair = keyGen.generateKeyPair();
-            PrivateKey priv = pair.getPrivate();
-            PublicKey pub = pair.getPublic();
+            PrivateKey pvt = getPrivate("TheVault", password);
+            PublicKey pub = getPublic("TheVault", password);
  
  
             /* Create a Signature object and initialize it with the private key */
@@ -30,7 +30,7 @@ class GenSig {
             //Signature dsa = Signature.getInstance("SHA1withDSA", "SUN"); 
             Signature dsa = Signature.getInstance("SHA256WITHRSA", "SunRsaSign");
             
-            dsa.initSign(priv);
+            dsa.initSign(pvt);
  
             /* Update and sign the data */
  
@@ -52,7 +52,7 @@ class GenSig {
  
          
             /* Save the signature in a file */
-            FileOutputStream sigfos = new FileOutputStream("sig");
+            FileOutputStream sigfos = new FileOutputStream("Allans-Signatur");
             sigfos.write(realSig);
  
             sigfos.close();
@@ -60,7 +60,7 @@ class GenSig {
  
             /* Save the public key in a file */
             byte[] key = pub.getEncoded();
-            FileOutputStream keyfos = new FileOutputStream("suepk");
+            FileOutputStream keyfos = new FileOutputStream("Allans-PubKey");
             keyfos.write(key);
  
             keyfos.close();
@@ -69,7 +69,23 @@ class GenSig {
             System.err.println("Caught exception " + e.toString());
         }
  
-    };
+    }
+
+	static PublicKey getPublic(String alias, char[] password) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+		KeyStore ks = KeyStore.getInstance("JKS");
+		FileInputStream ksfis = new FileInputStream(keystorage);
+		BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
+		ks.load(ksbufin, password);
+		return ks.getCertificate(alias).getPublicKey();
+	}
+
+	private static PrivateKey getPrivate(String alias, char[] password) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, UnrecoverableKeyException {
+		KeyStore ks = KeyStore.getInstance("JKS");
+		FileInputStream ksfis = new FileInputStream(keystorage);
+		BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
+		ks.load(ksbufin, password);
+		return (PrivateKey) ks.getKey(alias, password);
+	};
  
 }
 

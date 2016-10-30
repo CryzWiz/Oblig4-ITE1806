@@ -20,11 +20,7 @@ class VerSig {
         	
         	/* import encoded public key */
         	
-            PublicKey pubKey = getPublic(args[0], password);
-            
-            
-            
-            
+            PublicKey pubKey = GenSig.getPublic(args[0], password);
             
             /* input the signature bytes */
             FileInputStream sigfis = new FileInputStream(signaturefile);
@@ -63,13 +59,4 @@ class VerSig {
 };
  
     }
-
-	private static PublicKey getPublic(String alias, char[] password) throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
-		KeyStore ks = KeyStore.getInstance("JKS");
-		FileInputStream ksfis = new FileInputStream(keystorage);
-		BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
-		ks.load(ksbufin, password);
-		return ks.getCertificate(alias).getPublicKey();
-	}
- 
 }
