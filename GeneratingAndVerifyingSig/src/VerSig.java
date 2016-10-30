@@ -4,11 +4,10 @@ import java.security.cert.CertificateException;
 import java.security.spec.*;
  
 class VerSig {
- 
+	public static String keystorage = "keystore";
     public static void main(String[] args) {
  
         /* Verify a DSA signature */
- 
         if (args.length != 4) {
             System.out.println("Usage: VerSig alias password signaturefile datafile");
             }
@@ -20,23 +19,15 @@ class VerSig {
         	String datafile = args[3];
         	
         	/* import encoded public key */
-        	 
-            FileInputStream keyfis = new FileInputStream(getPublic(args[0], password));
-            byte[] encKey = new byte[keyfis.available()];  
-            keyfis.read(encKey);
- 
-            keyfis.close();
- 
-            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(encKey);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
-            PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
+        	
+            PublicKey pubKey = getPublic(args[0], password);
             
             
             
             
             
             /* input the signature bytes */
-            FileInputStream sigfis = new FileInputStream(args[2]);
+            FileInputStream sigfis = new FileInputStream(signaturefile);
             byte[] sigToVerify = new byte[sigfis.available()]; 
             sigfis.read(sigToVerify );
  
@@ -49,7 +40,7 @@ class VerSig {
  
             /* Update and verify the data */
  
-            FileInputStream datafis = new FileInputStream(args[3]);
+            FileInputStream datafis = new FileInputStream(datafile);
             BufferedInputStream bufin = new BufferedInputStream(datafis);
  
             byte[] buffer = new byte[1024];
@@ -73,12 +64,12 @@ class VerSig {
  
     }
 
-	private static String getPublic(String alias, char[] password) throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
+	private static PublicKey getPublic(String alias, char[] password) throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
 		KeyStore ks = KeyStore.getInstance("JKS");
-		FileInputStream ksfis = new FileInputStream(alias);
+		FileInputStream ksfis = new FileInputStream(keystorage);
 		BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
 		ks.load(ksbufin, password);
-		return ks.getCertificate(alias).getPublicKey().toString();
+		return ks.getCertificate(alias).getPublicKey();
 	}
  
 }
