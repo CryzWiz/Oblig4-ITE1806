@@ -18,9 +18,6 @@ class VerSig {
         	String datafile = args[3];
         	
         	/* import encoded public key - Using GenSigs method for public key
-        	 * Since this is for just me, I can have it just like this.
-        	 * If not you'll need a public method for this VerSig and supply 
-        	 * the password for you key storage
         	 */
             PublicKey pubKey = GenSig.getPublic(args[0], password);
             
