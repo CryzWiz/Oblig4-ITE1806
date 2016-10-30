@@ -1,5 +1,6 @@
 import java.io.*;
 import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.spec.*;
  
 class VerSig {
@@ -18,19 +19,17 @@ class VerSig {
         	String signaturefile = args[2];
         	String datafile = args[3];
         	
-            /* import encoded public key */
-        	KeyStore ks = KeyStore.getInstance("JKS");
-    		FileInputStream ksfis = new FileInputStream(args[0]);
-    		BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
-    		ks.load(ksbufin, password);
-    		KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
-    		PublicKey pubKey = keyFactory.generatePublic((KeySpec) ks.getCertificate(alias).getPublicKey());
+        	/* import encoded public key */
+        	 
+            FileInputStream keyfis = new FileInputStream(getPublic(args[0], password));
+            byte[] encKey = new byte[keyfis.available()];  
+            keyfis.read(encKey);
  
-           // X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(ks.getCertificate(alias).getPublicKey());
-            
-            //KeyFactory keyFactory = KeyFactory.getInstance("DSA", "SUN");
-            //KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
-            //PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
+            keyfis.close();
+ 
+            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(encKey);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
+            PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
             
             
             
@@ -73,5 +72,14 @@ class VerSig {
 };
  
     }
+
+	private static String getPublic(String alias, char[] password) throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException {
+		KeyStore ks = KeyStore.getInstance("JKS");
+		FileInputStream ksfis = new FileInputStream(alias);
+		BufferedInputStream ksbufin = new BufferedInputStream(ksfis);
+		ks.load(ksbufin, password);
+		String x = ks.getCertificate(alias).getPublicKey().toString();
+		return x;
+	}
  
 }
