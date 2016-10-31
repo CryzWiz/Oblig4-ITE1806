@@ -1,6 +1,8 @@
-import java.net.*;
-import java.io.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
@@ -21,6 +23,7 @@ public class KnockKnockServer {
 
         try {
         	SSLServerSocket serverSocket = (SSLServerSocket) ssf.createServerSocket(portNumber);
+        	System.out.println("Listening for connections on port" + portNumber);
         	SSLSocket clientSocket = (SSLSocket) serverSocket.accept();
             PrintWriter out =
                 new PrintWriter(clientSocket.getOutputStream(), true);
