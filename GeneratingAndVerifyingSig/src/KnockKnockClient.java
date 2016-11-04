@@ -9,7 +9,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 public class KnockKnockClient {
     public static void main(String[] args) throws IOException {
-    	System.setProperty("javax.net.ssl.trustStore", "knockknockkeystore");
+    	System.setProperty("javax.net.ssl.trustStore", "keystore");
     	SSLSocketFactory f = (SSLSocketFactory) SSLSocketFactory.getDefault();
         if (args.length != 2) {
             System.err.println(

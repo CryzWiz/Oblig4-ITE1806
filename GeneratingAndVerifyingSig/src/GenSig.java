@@ -1,7 +1,7 @@
 import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
- 
+  
 class GenSig {
 	public static String keystorage = "keystore";
 	

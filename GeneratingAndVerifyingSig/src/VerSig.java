@@ -2,7 +2,7 @@ import java.io.*;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.spec.*;
- 
+  
 class VerSig {
 	public static String keystorage = "keystore";
     public static void main(String[] args) {
